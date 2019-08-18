@@ -57,16 +57,15 @@
         const scaledColumns = columnsCount / pixelSize;
 
         const newRows = [];
-        for (let row = 0; row <= scaledRows; row++) {
+        for (let row = 0; row < scaledRows; row++) {
             const newColumns = [];
-            for (let column = 0; column <= scaledColumns; column++) {
+            for (let column = 0; column < scaledColumns; column++) {
                 let currentPixels = [];
                 for (let i = 0; i < pixelSize / 2; i++) {
                     for (let j = 0; j < pixelSize / 2; j++) {
                         const currentRow = pixels[row * pixelSize + i];
                         if (currentRow) {
-                            const currentColumn =
-                                currentRow[column * pixelSize + j];
+                            const currentColumn = currentRow[column * pixelSize + j];
                             if (currentColumn) {
                                 currentPixels.push(currentColumn);
                             }
@@ -267,36 +266,22 @@
 
 
     sizeSlider.addEventListener('change', function () {
-        console.log('chnage', this.value, Number(this.value), typeof this.value)
         const pixelSize = Number(this.value);
-
-        const averaged = averageColors(STORE.currentPixels, pixelSize);
+        const averaged = getAverage(STORE.currentOptions.src, pixelSize) || averageColors(STORE.currentPixels, pixelSize);
         STORE.currentOptions = Object.assign({}, STORE.currentOptions, { pixelSize, averaged });
         render(STORE.currentOptions);
-        return;
-
-        // const pixelSize = this.value * (window.devicePixelRatio * 2);
-        // const averaged = getAverage(STORE.currentOptions.src, pixelSize) || averageColors(STORE.currentPixels, pixelSize);
-        // const currentPixels = STORE.currentPixels;
-        // const averaged = averageColors(currentPixels, pixelSize);
-        // updateCache(STORE.currentOptions.src, pixelSize, averaged);
-        const options = Object.assign({}, STORE.currentOptions, { pixelSize, averaged });
-        STORE.currentOptions = options;
-        render(options);
     });
 
     paddingSlider.addEventListener('change', function () {
         const padding = Number(this.value);
-        const options = Object.assign({}, STORE.currentOptions, { padding });
-        STORE.currentOptions = options;
-        render(options);
+        STORE.currentOptions = Object.assign({}, STORE.currentOptions, { padding });
+        render(STORE.currentOptions);
     });
 
     styleDropdown.addEventListener('change', function () {
         const style = this.value;
-        const options = Object.assign({}, STORE.currentOptions, { style });
-        STORE.currentOptions = options;
-        render(options);
+        STORE.currentOptions = Object.assign({}, STORE.currentOptions, { style });
+        render(STORE.currentOptions);
     });
 
     frame.addEventListener('click', () => {
