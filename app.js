@@ -5,6 +5,7 @@
     const frame = document.querySelector('.frame');
     const image = document.getElementById('image');
     const xray = document.getElementById('xray');
+    const animate = document.getElementById('animate');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
@@ -12,7 +13,8 @@
         currentPixels: null,
         currentOptions: {},
         animationInterval: null,
-        xrayEnabled: false
+        xrayEnabled: false,
+        animateEnabled: false,
     };
 
     const AVERAGES_CACHE = {};
@@ -102,7 +104,8 @@
         const height = image.naturalHeight;
         const src = image.src;
         // const pixelSize = 4 * (window.devicePixelRatio * 2);
-        const pixelSize = 4;
+        const pixelScaleFactor = Math.ceil(width / (window.innerWidth < 500 ? 256 : 512));
+        const pixelSize = 4 * pixelScaleFactor;
         const padding = 0;
         const addPixelVariation = false;
         const style = '3';
@@ -110,10 +113,11 @@
         canvas.width = width;
         canvas.height = height;
 
+        // ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
         ctx.drawImage(image, 0, 0);
         const imageData = ctx.getImageData(0, 0,  width,  height);
         STORE.currentPixels = calculateColors2dArray(imageData.data, width);
-        STORE.currentOptions = Object.assign({}, STORE.currentOptions, { width, height, pixelSize, padding, addPixelVariation, ctx, src, style });
+        STORE.currentOptions = Object.assign({}, STORE.currentOptions, { width, height, pixelSize, pixelScaleFactor, padding, addPixelVariation, ctx, src, style });
         update(STORE.currentOptions);
     };
 
@@ -130,11 +134,14 @@
     };
 
     const startAnimation = (animationFunc) => {
+        stopAnimation();
+        STORE.animationInterval = setInterval(animationFunc, 300);
+    };
+
+    const stopAnimation = () => {
         if (STORE.animationInterval) {
             clearInterval(STORE.animationInterval);
         }
-
-        STORE.animationInterval = setInterval(animationFunc, 300);
     };
 
     const update = (options) => {
@@ -278,25 +285,43 @@
 
 
     sizeSlider.addEventListener('change',() => {
-        const pixelSize = Number(sizeSlider.value);
+        const pixelSize = Number(sizeSlider.value) * STORE.currentOptions.pixelScaleFactor;
+        console.log('pixelSize', pixelSize);
         const averaged = getAverage(STORE.currentOptions.src, pixelSize) || averageColors(STORE.currentPixels, pixelSize);
         STORE.currentOptions = Object.assign({}, STORE.currentOptions, { pixelSize, averaged });
         render(STORE.currentOptions);
+        if (STORE.animateEnabled) {
+            startAnimation(() => render(STORE.currentOptions))
+        }
     });
 
     paddingSlider.addEventListener('change', () => {
         const padding = Number(paddingSlider.value);
         STORE.currentOptions = Object.assign({}, STORE.currentOptions, { padding });
         render(STORE.currentOptions);
+        if (STORE.animateEnabled) {
+            startAnimation(() => render(STORE.currentOptions))
+        }
     });
 
     styleDropdown.addEventListener('change', () => {
         const style = styleDropdown.value;
         STORE.currentOptions = Object.assign({}, STORE.currentOptions, { style });
         render(STORE.currentOptions);
+        if (STORE.animateEnabled) {
+            startAnimation(() => render(STORE.currentOptions))
+        }
     });
 
     xray.addEventListener('change', () => STORE.xrayEnabled = xray.checked);
+    animate.addEventListener('change', () => {
+        STORE.animateEnabled = animate.checked;
+        if (STORE.animateEnabled) {
+            startAnimation(() => render(STORE.currentOptions))
+        } else {
+            stopAnimation();
+        }
+    });
 
     frame.addEventListener('click', () => {
         document.body.classList.toggle('split-diagonal');
@@ -315,13 +340,13 @@
     });
 
     const IMAGES = [
-        'https://images.unsplash.com/photo-1565602088565-bdae818513aa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
-        'https://images.unsplash.com/photo-1544450537-e6282c1110b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
-        'https://images.unsplash.com/photo-1511902467434-4677a533a674?ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80',
-        'https://images.unsplash.com/photo-1563736204193-eae6c811441b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
-        'https://images.unsplash.com/photo-1431794062232-2a99a5431c6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
-        'https://images.unsplash.com/photo-1529304344766-6b537de190f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
-        'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80'
+        // 'https://images.unsplash.com/photo-1565602088565-bdae818513aa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        // 'https://images.unsplash.com/photo-1544450537-e6282c1110b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        'https://images.unsplash.com/photo-1511902467434-4677a533a674?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
+        // 'https://images.unsplash.com/photo-1563736204193-eae6c811441b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        // 'https://images.unsplash.com/photo-1431794062232-2a99a5431c6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        // 'https://images.unsplash.com/photo-1529304344766-6b537de190f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        // 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80'
     ];
 
     loadImageByUrl( `${IMAGES[getRandomNumber(0, IMAGES.length - 1)]}`);
