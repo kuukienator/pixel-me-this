@@ -10,6 +10,7 @@
     const STORE = {
         currentPixels: null,
         currentOptions: {},
+        animationInterval: null
     };
 
     const AVERAGES_CACHE = {};
@@ -126,12 +127,22 @@
         return cacheEntry[size] || null;
     };
 
+    const startAnimation = (animationFunc) => {
+        if (STORE.animationInterval) {
+            clearInterval(STORE.animationInterval);
+        }
+
+        STORE.animationInterval = setInterval(animationFunc, 300);
+    };
+
     const update = (options) => {
         const currentPixels = STORE.currentPixels;
         const averaged = averageColors(currentPixels, options.pixelSize);
         updateCache(options.src, options.pixelSize, averaged);
-        render(Object.assign({}, options, { averaged }));
-        // setInterval(() => render(Object.assign({}, options, { averaged })), 300);
+
+        const newOptions = Object.assign({}, options, { averaged });
+        render(newOptions);
+        // startAnimation(() => render(newOptions));
     };
 
     const render = ({ ctx, averaged, width, height, pixelSize, padding, addPixelVariation, style }) => {
@@ -250,9 +261,9 @@
                 ctx.fillStyle = `rgba(${pixels[row][column].join(',')})`;
                 ctx.arc(
                     // column * pixelSize - pixelSize / 2 + padding,
-                    (column * pixelSize) - (pixelSize / 2) + padding,
+                    (column * pixelSize) + (pixelSize / 2),
                     // row * pixelSize - pixelSize / 2 + padding,
-                    (row * pixelSize) - (pixelSize / 2) + padding,
+                    (row * pixelSize) + (pixelSize / 2),
                     // (row * pixelSize),
                     _pixelSize / 2 - padding,
                     0,
@@ -289,9 +300,13 @@
     });
 
     const IMAGES = [
-        // 'https://images.unsplash.com/photo-1565602088565-bdae818513aa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
-        // 'https://images.unsplash.com/photo-1544450537-e6282c1110b2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1024&q=80',
-        'https://images.unsplash.com/photo-1511902467434-4677a533a674?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=512&q=80'
+        'https://images.unsplash.com/photo-1565602088565-bdae818513aa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        'https://images.unsplash.com/photo-1544450537-e6282c1110b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        'https://images.unsplash.com/photo-1511902467434-4677a533a674?ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80',
+        'https://images.unsplash.com/photo-1563736204193-eae6c811441b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        'https://images.unsplash.com/photo-1431794062232-2a99a5431c6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        'https://images.unsplash.com/photo-1529304344766-6b537de190f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+        'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80'
     ];
 
     loadImageByUrl( `${IMAGES[getRandomNumber(0, IMAGES.length - 1)]}`);
