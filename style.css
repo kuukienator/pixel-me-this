@@ -1,0 +1,120 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background: white;
+    font-family: 'Arima Madurai', cursive;
+}
+
+h1 {
+    margin: 0.4em;
+}
+
+canvas {
+    max-width: 75vw;
+    max-height: 75vh;
+    box-shadow: 0 0 6px 2px hsla(240, 100%, 2%, 0.3);
+
+    /*clip-path: polygon(0% 0%, 0% 0%, 0% 0, 0% 0%);*/
+    /*transition: clip-path 300ms;*/
+    /*animation: 1s polygon reverse;*/
+
+}
+
+@keyframes polygon {
+    0% { clip-path: polygon(0 0, 50% 0, 100% 0, 100% 50%, 100% 100%, 50% 100%, 0 100%, 0 50%); }
+    100% { clip-path:  polygon(50% 50%, 50% 25%, 50% 50%, 75% 50%, 50% 50%, 50% 75%, 50% 50%, 25% 50%); }
+}
+
+.split-diagonal canvas {
+    clip-path: polygon(0% 100%, 100% 1000%, 100% 0);
+}
+
+.split-diagonal img {
+    display: block;
+    z-index: 0;
+    /*clip-path: polygon(0% 100%, 100% 100%, 100% 0);*/
+}
+
+.frame:hover canvas {
+    /*display: block;*/
+    /*z-index: 0;*/
+    /*clip-path: polygon(0% 100%, 100% 100%, 100% 0);*/
+    /*clip-path: polygon(0% 100%, 100% 1000%, 100% 0, 0% 0%);*/
+
+
+    /*animation: 1s polygon reverse;*/
+    /*clip-path: polygon(0 0, 50% 0, 100% 0, 100% 50%, 100% 100%, 50% 100%, 0 100%, 0 50%);*/
+
+}
+
+img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    max-width: 75vw;
+    max-height: 75vh;
+    padding: 2vmin;
+    z-index: -1;
+    display: none;
+
+    /*transition: clip-path 1s;*/
+    /*clip-path: polygon(0% 100%, 100% 100%, 100% 0, 0% 100%);*/
+}
+
+.frame {
+    display: flex;
+    background: #FFFDF3;
+    background: #FFF8FB;
+    position: relative;
+    border: 1.5vmin inset #181A1A;
+    padding: 2vmin;
+    box-shadow: 5px 5px 3px 0px hsla(240, 100%, 2%, 0.3);
+    box-shadow: 3px 5px 7px 3px hsla(240, 100%, 2%, 0.3);
+}
+
+.glass {
+    width: 100%;
+    height: 100%;
+    /*background: rgba(255, 0, 0, 0.3);*/
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(to bottom right, rgba(173, 173, 175, 0), rgba(162, 162, 162, 0.5));
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4em;
+    margin-top: 20px;
+    max-width: 100%;
+
+}
+
+.controlRow {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+}
+
+.controlRow label {
+    margin-right: 0.5em;
+}
+
+.controlRow select {
+    font-size: 1em;
+    width: 100%;
+    font-family: inherit;
+}
+
+.controlRow input {
+    font-size: 1em;
+    width: 100%;
+}
