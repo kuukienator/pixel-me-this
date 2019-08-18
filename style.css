@@ -81,8 +81,8 @@ img {
     position: absolute;
     left: 0;
     top: 0;
-    max-width: 75vw;
-    max-height: 75vh;
+    max-width: 70vw;
+    max-height: 70vh;
     padding: 2vmin;
     z-index: -1;
     display: none;

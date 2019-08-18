@@ -105,10 +105,13 @@
         const src = image.src;
         // const pixelSize = 4 * (window.devicePixelRatio * 2);
         const pixelScaleFactor = Math.ceil(width / (window.innerWidth < 500 ? 256 : 512));
-        const pixelSize = 4 * pixelScaleFactor;
+        // const pixelSize = 4 * pixelScaleFactor;
+        const pixelSize = Math.floor(1 * width * 0.008);
         const padding = 0;
         const addPixelVariation = false;
-        const style = '3';
+        const style = '1';
+
+        console.log(width * 0.01, pixelScaleFactor, pixelSize);
 
         canvas.width = width;
         canvas.height = height;
@@ -285,7 +288,8 @@
 
 
     sizeSlider.addEventListener('change',() => {
-        const pixelSize = Number(sizeSlider.value) * STORE.currentOptions.pixelScaleFactor;
+        // const pixelSize = Number(sizeSlider.value) * STORE.currentOptions.pixelScaleFactor;
+        const pixelSize = Math.floor(Number(sizeSlider.value) * STORE.currentOptions.width * 0.008);
         console.log('pixelSize', pixelSize);
         const averaged = getAverage(STORE.currentOptions.src, pixelSize) || averageColors(STORE.currentPixels, pixelSize);
         STORE.currentOptions = Object.assign({}, STORE.currentOptions, { pixelSize, averaged });
@@ -342,7 +346,7 @@
     const IMAGES = [
         // 'https://images.unsplash.com/photo-1565602088565-bdae818513aa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
         // 'https://images.unsplash.com/photo-1544450537-e6282c1110b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
-        'https://images.unsplash.com/photo-1511902467434-4677a533a674?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
+        'https://images.unsplash.com/photo-1511902467434-4677a533a674?ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80',
         // 'https://images.unsplash.com/photo-1563736204193-eae6c811441b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
         // 'https://images.unsplash.com/photo-1431794062232-2a99a5431c6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
         // 'https://images.unsplash.com/photo-1529304344766-6b537de190f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
