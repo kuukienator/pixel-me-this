@@ -4,13 +4,15 @@
     const styleDropdown = document.getElementById('style');
     const frame = document.querySelector('.frame');
     const image = document.getElementById('image');
+    const xray = document.getElementById('xray');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
     const STORE = {
         currentPixels: null,
         currentOptions: {},
-        animationInterval: null
+        animationInterval: null,
+        xrayEnabled: false
     };
 
     const AVERAGES_CACHE = {};
@@ -146,6 +148,7 @@
     };
 
     const render = ({ ctx, averaged, width, height, pixelSize, padding, addPixelVariation, style }) => {
+        // document.body.classList.remove('pixelate-animation');
         switch (style) {
             case "1":
                 renderCirclePixels(
@@ -194,6 +197,8 @@
                     addPixelVariation
                 );
         }
+        // document.body.classList.add('pixelate-animation')
+        // setTimeout(() => document.body.classList.add('pixelate-animation'), 1000);
     };
 
     const getRandomNumber = (min, max) => {
@@ -242,10 +247,6 @@
         padding,
         addPixelVariation
     ) => {
-        console.log('w', w);
-        console.log('h', h);
-        console.log('pixelSize', pixelSize);
-        console.log('pixels', pixels.length);
         ctx.fillStyle = 'white';
         ctx.clearRect(0, 0, w, h);
 
@@ -276,27 +277,41 @@
     };
 
 
-    sizeSlider.addEventListener('change', function () {
-        const pixelSize = Number(this.value);
+    sizeSlider.addEventListener('change',() => {
+        const pixelSize = Number(sizeSlider.value);
         const averaged = getAverage(STORE.currentOptions.src, pixelSize) || averageColors(STORE.currentPixels, pixelSize);
         STORE.currentOptions = Object.assign({}, STORE.currentOptions, { pixelSize, averaged });
         render(STORE.currentOptions);
     });
 
-    paddingSlider.addEventListener('change', function () {
-        const padding = Number(this.value);
+    paddingSlider.addEventListener('change', () => {
+        const padding = Number(paddingSlider.value);
         STORE.currentOptions = Object.assign({}, STORE.currentOptions, { padding });
         render(STORE.currentOptions);
     });
 
-    styleDropdown.addEventListener('change', function () {
-        const style = this.value;
+    styleDropdown.addEventListener('change', () => {
+        const style = styleDropdown.value;
         STORE.currentOptions = Object.assign({}, STORE.currentOptions, { style });
         render(STORE.currentOptions);
     });
 
+    xray.addEventListener('change', () => STORE.xrayEnabled = xray.checked);
+
     frame.addEventListener('click', () => {
         document.body.classList.toggle('split-diagonal');
+    });
+
+    frame.addEventListener('mousemove', event => {
+        if (STORE.xrayEnabled) {
+            image.style.clipPath = `ellipse(100px 100px at ${event.offsetX}px ${event.offsetY}px)`;
+            image.style.zIndex = '0';
+            image.style.display = 'block';
+        }
+    });
+
+    frame.addEventListener('mouseleave', () => {
+        image.style.zIndex = '-1'
     });
 
     const IMAGES = [

@@ -19,9 +19,26 @@ canvas {
     box-shadow: 0 0 6px 2px hsla(240, 100%, 2%, 0.3);
 
     /*clip-path: polygon(0% 0%, 0% 0%, 0% 0, 0% 0%);*/
+    /*clip-path: inset(0px 0px 0px 0px);*/
+    /*clip-path: inset(0px 100% 0px 0px);*/
+
+    /*clip-path: polygon(0% 0%, 50% 0%, 50% 100%, 0% 100%);*/
+    /*clip-path: polygon(0% 0%, 75% 0%, 75% 100%, 0% 100%);*/
+    /*z-index: 1;*/
     /*transition: clip-path 300ms;*/
     /*animation: 1s polygon reverse;*/
+}
 
+@keyframes pixelate {
+    0% {
+        /*clip-path: polygon(0% 0%, 0% 0%, 0% 0, 0% 0%);*/
+        clip-path: inset(0px 100% 0px 0px);
+    }
+    100% {
+        /*clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);*/
+        clip-path: inset(0px 0px 0px 0px);
+
+    }
 }
 
 @keyframes polygon {
@@ -39,7 +56,16 @@ canvas {
     /*clip-path: polygon(0% 100%, 100% 100%, 100% 0);*/
 }
 
+.pixelate-animation canvas {
+    animation: 1s pixelate;
+    /*clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);*/
+    /*clip-path: inset(0px 0px 0px 0px);*/
+    clip-path: none;
+}
+
 .frame:hover canvas {
+    /*animation: 1s pixelate;*/
+    /*clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);*/
     /*display: block;*/
     /*z-index: 0;*/
     /*clip-path: polygon(0% 100%, 100% 100%, 100% 0);*/
